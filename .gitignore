@@ -1,0 +1,6 @@
+.DS_Store
+.idea
+.tox
+*.pyc
+*.swp
+__pycache__
