@@ -14,4 +14,3 @@ Usage
 -----
 1. `source .tox/py39/bin/activate`
 1. `./puzzle_sheets/puzzle_sheets.py <puz_file_path>`
-
