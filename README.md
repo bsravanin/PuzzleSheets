@@ -7,15 +7,22 @@ A tool to parse .puz files. It can be used to:
 Installation
 ------------
 1. Clone or download [the code](https://github.com/bsravanin/PuzzleSheets).
-1. Run the following commands from a terminal:
+2. Run the following commands from a terminal:
    1. `cd PuzzleSheets`
-   1. `tox -e py39`
+   2. `tox -e py39`
 
 Usage
------
+=====
+CLI
+---
 1. `source .tox/py39/bin/activate`
-1. To see all options: `./puzzle_sheets/puzzle_sheets.py -h`
+2. To see all options: `./puzzle_sheets/puzzle_sheets.py -h`
 
+SERVER
+------
+1. `source .tox/py39/bin/activate`
+2. `FLASK_APP=./puzzle_sheets/server.py flask run`
+3. Go to [http://127.0.0.1:5000/](http://127.0.0.1:5000/)
 
 KNOWN ISSUES
 ------------

@@ -116,16 +116,22 @@ def _get_cell(sheet, row, col):
     return sheet.cell(row=row, column=col)
 
 
-def _get_xlsx_path(puz_path: str) -> str:
+def get_timestamp_str() -> str:
+    return datetime.utcnow().strftime('%Y%m%d_%H%M%S')
+
+
+def get_xlsx_path(puz_path: str, include_timestamp=True) -> str:
     if puz_path.endswith('.puz'):
         xlsx_path = puz_path.removesuffix('.puz')
     else:
         xlsx_path = puz_path.removesuffix('.PUZ')
-    tstamp = datetime.utcnow().strftime('%Y%m%d_%H%M%S')
-    return f'{xlsx_path}_{tstamp}.xlsx'
+    if include_timestamp:
+        return f'{xlsx_path}_{get_timestamp_str()}.xlsx'
+    else:
+        return f'{xlsx_path}.xlsx'
 
 
-def write_xlsx(puz_path: str, puzzle: Puzzle) -> str:
+def write_xlsx(puz_path: str, puzzle: Puzzle, xlsx_path=None) -> str:
     """Writes the PUZ file contents to a XLSX file and returns its filename."""
     grid = _get_solution_grid(puzzle)
     workbook = Workbook()
@@ -170,7 +176,8 @@ def write_xlsx(puz_path: str, puzzle: Puzzle) -> str:
     for col in range(puzzle.width):
         sheet.column_dimensions[get_column_letter(col + 1)].width = GRID_WIDTH
 
-    xlsx_path = _get_xlsx_path(puz_path)
+    if xlsx_path is None:
+        xlsx_path = get_xlsx_path(puz_path)
     logging.info('Writing XLSX %s from PUZ %s', xlsx_path, puz_path)
     workbook.save(xlsx_path)
     return xlsx_path
