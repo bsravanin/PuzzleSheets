@@ -1,14 +1,25 @@
 import os
 import tempfile
+import time
 from flask import Flask, flash, request, redirect, send_from_directory, url_for
 from werkzeug.utils import secure_filename
 from puzzle_sheets import puzzle_parser
 
 
 UPLOAD_FOLDER = tempfile.TemporaryDirectory(suffix='_puzzle_sheets')
+AUTO_DELETE_OLDER_THAN_SECONDS = 300
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER.name
 app.config['MAX_CONTENT_LENGTH'] = 10 * 1000  # 10 KB
+
+
+def _delete_old_files():
+    root = app.config['UPLOAD_FOLDER']
+    now = time.time()
+    for fname in os.listdir(root):
+        fpath = os.path.join(root, fname)
+        if now - os.path.getmtime(fpath) > AUTO_DELETE_OLDER_THAN_SECONDS:
+            os.unlink(fpath)
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -48,4 +59,5 @@ def process_puz():
         xlsx_name = puzzle_parser.get_xlsx_path(puz_name, include_timestamp=False)
         xlsx_path = os.path.join(app.config['UPLOAD_FOLDER'], xlsx_name)
         puzzle_parser.write_xlsx(puz_path, puzzle, xlsx_path)
+        _delete_old_files()
         return send_from_directory(app.config['UPLOAD_FOLDER'], secure_filename(xlsx_name))
